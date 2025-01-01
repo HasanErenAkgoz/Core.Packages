@@ -7,7 +7,9 @@ using Core.Packages.Infrastructure.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Core.Packages.Application.Security.Hashing;
+using Core.Packages.Infrastructure.CrossCuttingConcerns.Caching.Redis;
 using Core.Packages.Infrastructure.Security.Hashing;
+using StackExchange.Redis;
 
 namespace Core.Packages.Infrastructure.Configuration;
 
@@ -22,8 +24,20 @@ internal static class ServiceRegistration
             options.ExpirationScanFrequency = TimeSpan.FromMinutes(5);
         });
         
+        var redisConfig = configuration.GetSection("Redis").Get<RedisConfiguration>();
+        if (redisConfig != null)
+        {
+            services.AddSingleton<IConnectionMultiplexer>(sp =>
+                ConnectionMultiplexer.Connect(redisConfig.ConnectionString));
+            
+            services.AddSingleton<ICacheManager, RedisCacheManager>();
+        }
+        else
+        {
+            services.AddSingleton<ICacheManager, MemoryCacheManager>();
+        }
+
         services.AddSingleton<ICacheConfiguration, CacheConfiguration>();
-        services.AddSingleton<ICacheManager, MemoryCacheManager>();
         return services;
     }
 
