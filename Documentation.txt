@@ -1,0 +1,186 @@
+CORE.PACKAGES DOKÜMANTASYONU
+============================
+
+1. PROJE GENEL BAKIŞ
+--------------------
+Core.Packages, kurumsal uygulamalar için temel altyapı sağlayan bir kütüphane projesidir.
+Katmanlı mimari prensiplerine göre tasarlanmış olup, üç ana katmandan oluşmaktadır:
+- Domain (Veri Katmanı)
+- Application (İş Mantığı Katmanı)
+- Infrastructure (Altyapı Katmanı)
+
+2. KATMANLAR VE İÇERİKLERİ
+--------------------------
+
+2.1. DOMAIN KATMANI (Core.Packages.Domain)
+-----------------------------------------
+Temel veri yapılarını ve domain entitylerini içerir.
+
+* Identity Entities:
+  - User: 
+    > Kullanıcı bilgilerini tutar (FirstName, LastName, Email, PasswordHash)
+    > Roller ve RefreshToken'lar ile ilişkilidir
+    > Şifreler hashlenerek saklanır
+  
+  - Role:
+    > Sistem rollerini tanımlar
+    > Kullanıcılar ve izinler ile ilişkilidir
+  
+  - UserRole:
+    > Kullanıcı-Rol ilişkisini sağlar
+    > Many-to-many ilişki tablosu
+  
+  - RefreshToken:
+    > JWT yenileme tokenlarını yönetir
+    > Token bilgisi, geçerlilik süresi ve IP bilgilerini tutar
+  
+  - BlacklistedToken:
+    > Geçersiz kılınmış tokenları takip eder
+    > Güvenlik için token blacklist mekanizması
+
+2.2. APPLICATION KATMANI (Core.Packages.Application)
+-------------------------------------------------
+İş mantığı, interfaceler ve cross-cutting concerns yapılarını içerir.
+
+* Security:
+  - IPasswordHasher:
+    > Şifre hashleme ve doğrulama işlemleri için interface
+    > PBKDF2 algoritması ile güvenli hashleme
+    > Salt kullanımı ile güvenlik artırımı
+
+  - ITokenService:
+    > JWT token üretimi ve yönetimi
+    > Access ve refresh token işlemleri
+    > Token validasyonu
+
+* Aspects:
+  - CacheAspect:
+    > Metod sonuçlarını önbellekler
+    > Cache süresini parametre olarak alır
+    > Cache anahtarlarını otomatik oluşturur
+  
+  - ValidationAspect:
+    > FluentValidation ile entegre çalışır
+    > Metod parametrelerini otomatik validate eder
+    > Validator type kontrolü yapar
+
+* CrossCuttingConcerns:
+  - ICacheManager:
+    > Cache operasyonları için temel interface
+    > Get, Add, Remove, IsAdd metodları
+    > Pattern tabanlı cache temizleme
+
+2.3. INFRASTRUCTURE KATMANI (Core.Packages.Infrastructure)
+-------------------------------------------------------
+Uygulama altyapısı ve implementasyonları barındırır.
+
+* Security:
+  - PasswordHasher:
+    > IPasswordHasher implementasyonu
+    > PBKDF2-SHA256 algoritması kullanır
+    > 16 byte salt, 32 byte key size
+    > 10000 iterasyon
+    > Timing attack koruması
+
+  - TokenService:
+    > JWT token üretimi
+    > Refresh token yönetimi
+    > Token blacklist kontrolü
+    > Claims yönetimi
+
+* Caching:
+  - MemoryCacheManager:
+    > IMemoryCache implementasyonu
+    > Thread-safe cache operasyonları
+    > Detaylı loglama
+    > Hata yönetimi
+    > Pattern bazlı cache temizleme
+
+3. KULLANIM KILAVUZU
+--------------------
+
+3.1. PASSWORD HASHLEME KULLANIMI
+* IPasswordHasher servisini inject edin
+* Şifre hashleme:
+  var hashedPassword = _passwordHasher.HashPassword("myPassword123");
+* Şifre doğrulama:
+  bool isValid = _passwordHasher.VerifyPassword("myPassword123", hashedPassword);
+
+3.2. CACHE KULLANIMI
+* Metod üzerine [CacheAspect] attribute'u eklenir
+* Cache süresi dakika cinsinden belirtilir
+* Örnek: [CacheAspect(duration: 10)]
+
+3.3. TOKEN KULLANIMI
+* TokenService inject edilir
+* GenerateAccessToken ile token üretilir
+* ValidateToken ile token doğrulanır
+
+4. KONFİGÜRASYON
+----------------
+appsettings.json içinde aşağıdaki bölümler tanımlanmalıdır:
+
+* Cache Ayarları:
+  "Cache": {
+    "DefaultExpirationMinutes": "30",
+    "InstanceName": "CorePackages_",
+    "RetryCount": "3",
+    "RetryDelayMilliseconds": "1000"
+  }
+
+* Token Ayarları:
+  "TokenOptions": {
+    "Audience": "core.packages.users",
+    "Issuer": "core.packages.auth",
+    "AccessTokenExpiration": 15,
+    "RefreshTokenExpiration": 60,
+    "SecurityKey": "your-secret-key-here"
+  }
+
+5. BAĞIMLILIKLAR
+----------------
+- .NET 9.0
+- Microsoft.EntityFrameworkCore
+- FluentValidation
+- Microsoft.Extensions.Caching.Memory
+- System.IdentityModel.Tokens.Jwt
+- Microsoft.AspNetCore.Http
+- Microsoft.AspNetCore.Cryptography.KeyDerivation
+- Newtonsoft.Json
+
+6. GÜVENLİK ÖZELLİKLERİ
+-----------------------
+1. Şifre Güvenliği:
+   - PBKDF2-SHA256 algoritması
+   - 16 byte rastgele salt
+   - 10000 iterasyon
+   - Timing attack koruması
+   - Salt ve hash birlikte depolanır
+
+2. Token Güvenliği:
+   - JWT token kullanımı
+   - Refresh token mekanizması
+   - Token blacklist desteği
+   - Claims bazlı yetkilendirme
+
+7. BEST PRACTICES
+----------------
+1. Şifreleri her zaman hash'lenmiş olarak saklayın
+2. Cache süreleri veri değişim sıklığına göre ayarlanmalı
+3. Token süreleri güvenlik politikalarına göre belirlenmeli
+4. Validasyon kuralları domain kurallarına uygun yazılmalı
+5. Repository pattern ile veritabanı işlemleri soyutlanmalı
+6. Cross-cutting concerns için aspect kullanımı tercih edilmeli
+7. Tüm kritik operasyonlar loglanmalı
+8. Exception handling merkezi olarak yönetilmeli
+9. Dependency injection ile loose coupling sağlanmalı
+
+8. HATA KODLARI VE ÇÖZÜMLER
+---------------------------
+- HASH_001: Hashleme işlemi başarısız
+- HASH_002: Hash doğrulama hatası
+- CACHE_001: Cache key bulunamadı
+- CACHE_002: Cache yazma hatası
+- TOKEN_001: Geçersiz token
+- TOKEN_002: Süresi dolmuş token
+- VALID_001: Validasyon hatası 

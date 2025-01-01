@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="MediatR" Version="12.4.1" />
+      <PackageReference Include="MediatR.Contracts" Version="2.0.1" />
+      <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.0" />
+      <PackageReference Include="SqlExpression.Core" Version="3.0.1.2" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="Core.Packages.Application">
+        <HintPath>..\Core.Packages.Infrastructure\bin\Debug\net9.0\Core.Packages.Application.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
+</Project>
