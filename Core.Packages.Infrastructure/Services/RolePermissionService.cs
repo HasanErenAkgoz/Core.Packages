@@ -1,6 +1,4 @@
 using Core.Packages.Application.Interfaces;
-using Core.Packages.Application.Repositories;
-using Core.Packages.Domain.Security;
 using Core.Packages.Domain.Security.Permissions.Entities;
 using Microsoft.EntityFrameworkCore;
 

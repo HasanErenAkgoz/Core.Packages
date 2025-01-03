@@ -1,4 +1,4 @@
-using Core.Packages.Security.Permissions.PipelineBehaviors;
+using Core.Packages.Application.Security.PipelineBehaviors;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 

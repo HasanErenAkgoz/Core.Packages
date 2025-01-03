@@ -7,10 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Core.Packages.Application\Core.Packages.Application.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
+      <PackageReference Include="FluentValidation" Version="11.11.0" />
       <PackageReference Include="JWT" Version="11.0.0" />
       <PackageReference Include="Microsoft.AspNetCore.Cryptography.KeyDerivation" Version="9.0.0" />
       <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
@@ -38,6 +35,11 @@
 
     <ItemGroup>
       <Folder Include="CrossCuttingConcerns\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Core.Packages.Application\Core.Packages.Application.csproj" />
+      <ProjectReference Include="..\Core.Packages.Domain\Core.Packages.Domain.csproj" />
     </ItemGroup>
 
 </Project>

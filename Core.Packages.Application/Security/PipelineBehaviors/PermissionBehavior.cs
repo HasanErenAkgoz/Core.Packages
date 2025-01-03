@@ -1,13 +1,10 @@
-using System.Security.Claims;
-using System.Reflection;
-using Core.Packages.Application.Authorization;
+using Core.Packages.Application.Security.Attributes;
 using MediatR;
 using Microsoft.AspNetCore.Http;
-using Core.Packages.Domain.Security.Permissions.Attributes;
-using RequiredPermissionAttribute = Core.Packages.Domain.Security.Permissions.Attributes.RequiredPermissionAttribute;
+using System.Security.Claims;
 
-namespace Core.Packages.Security.Permissions.PipelineBehaviors
-{
+namespace Core.Packages.Application.Security.PipelineBehaviors;
+
     public class PermissionBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
         where TRequest : IRequest<TResponse>, IRequest
     {
@@ -61,4 +58,3 @@ namespace Core.Packages.Security.Permissions.PipelineBehaviors
                 .ToList();
         }
     }
-} 

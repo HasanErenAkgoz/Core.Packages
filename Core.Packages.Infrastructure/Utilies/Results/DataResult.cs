@@ -1,5 +1,4 @@
-﻿using System;
-using Core.Packages.Application.Results;
+﻿using Core.Packages.Application.Results;
 
 namespace Core.Packages.Infrastructure.Utilities.Results
 {

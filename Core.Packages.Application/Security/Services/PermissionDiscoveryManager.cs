@@ -1,7 +1,5 @@
-using System.Reflection;
 using Core.Packages.Application.Interfaces;
-using Core.Packages.Application.Repositories;
-using Core.Packages.Domain.Security.Permissions.Attributes;
+using Core.Packages.Application.Security.Attributes;
 using Core.Packages.Domain.Security.Permissions.Entities;
 using Core.Packages.Domain.Security.Permissions.Models;
 using Core.Packages.Domain.Security.Permissions.Services;
@@ -9,6 +7,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
+using System.Reflection;
 
 namespace Core.Packages.Application.Security.Services;
 

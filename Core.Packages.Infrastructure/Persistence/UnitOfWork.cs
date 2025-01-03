@@ -1,11 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using Core.Packages.Application.Interfaces;
 using Core.Packages.Infrastructure.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace Core.Packages.Infrastructure.Persistence;
 

@@ -1,8 +1,7 @@
-using System.Reflection;
-using Core.Packages.Application.Authorization;
-using Core.Packages.Application.Interfaces;
+using Core.Packages.Application.Security.Attributes;
 using MediatR;
 using Microsoft.AspNetCore.Http;
+using System.Reflection;
 
 namespace Core.Packages.Application.Behaviors;
 

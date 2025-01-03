@@ -1,14 +1,13 @@
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Security.Cryptography;
-using System.Text;
-using Core.Packages.Application.Interfaces;
 using Core.Packages.Application.Security;
 using Core.Packages.Application.Security.JWT;
 using Core.Packages.Domain.Identity;
 using Core.Packages.Infrastructure.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace Core.Packages.Infrastructure.Services;
 

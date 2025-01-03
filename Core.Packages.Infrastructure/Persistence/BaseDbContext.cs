@@ -12,7 +12,6 @@ public abstract class BaseDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        // Soft delete filter
         foreach (var type in modelBuilder.Model.GetEntityTypes())
         {
             if (typeof(BaseEntity<int>).IsAssignableFrom(type.ClrType))

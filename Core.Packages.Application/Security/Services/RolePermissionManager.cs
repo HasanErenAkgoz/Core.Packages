@@ -1,9 +1,7 @@
 using Core.Packages.Application.Interfaces;
-using Core.Packages.Application.Repositories;
 using Core.Packages.Domain.Security.Permissions.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
-using IUnitOfWork = Core.Packages.Application.Interfaces.IUnitOfWork;
 
 public class RolePermissionManager : IRolePermissionService
 {
@@ -25,6 +23,7 @@ public class RolePermissionManager : IRolePermissionService
             if (permissions.Contains(permission))
                 return true;
         }
+
         return false;
     }
 
@@ -48,11 +47,23 @@ public class RolePermissionManager : IRolePermissionService
 
     public async Task AddPermissionToRoleAsync(string roleName, string permission)
     {
-        throw new NotImplementedException();
+        var rolePermission = new RolePermission { RoleName = roleName, Permission = permission };
+        await _unitOfWork.Repository<RolePermission>().AddAsync(rolePermission);
+        await _unitOfWork.CommitTransactionAsync();
+        _cache.Remove($"{CacheKeyPrefix}{roleName}");
     }
 
     public async Task RemovePermissionFromRoleAsync(string roleName, string permission)
     {
-        throw new NotImplementedException();
+        var rolePermission = await _unitOfWork.Repository<RolePermission>()
+            .Query()
+            .FirstOrDefaultAsync(rp => rp.RoleName == roleName && rp.Permission == permission);
+
+        if (rolePermission != null)
+        {
+            await _unitOfWork.Repository<RolePermission>().DeleteAsync(rolePermission);
+            await _unitOfWork.CommitTransactionAsync();
+            _cache.Remove($"{CacheKeyPrefix}{roleName}");
+        }
     }
-} 
+}
