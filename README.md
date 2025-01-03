@@ -1,6 +1,6 @@
 # Core.Packages
 
-Core.Packages, .NET uygulamaları için temel altyapı bileşenlerini içeren kapsamlı bir kütüphane paketidir. Bu paket, modern uygulamaların ihtiyaç duyduğu yaygın özellikleri ve en iyi uygulamaları içerir.
+Core.Packages, .NET uygulamaları için temel altyapı bileşenlerini içeren kapsamlı bir projedir. Bu proje, modern uygulamaların ihtiyaç duyduğu yaygın özellikleri ve en iyi uygulamaları içerir.
 
 ## 🚀 Özellikler
 
@@ -59,7 +59,7 @@ services.AddCoreInfrastructure(Configuration);
 
 ## 🙏 Teşekkürler
 
-Bu projeye katkıda bulunan herkese teşekkür ederiz. Özel teşekkürler:
+Bu projeye katkıda bulunan herkese şimdiden teşekkür ederim
 
 - [@HasanErenAkgoz](https://github.com/HasanErenAkgoz) - Proje sahibi ve ana geliştirici
 
