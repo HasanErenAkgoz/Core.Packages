@@ -1,4 +1,6 @@
 using Core.Packages.Application.Interfaces;
+using Core.Packages.Application.Repositories;
+using Core.Packages.Domain.Common;
 using Core.Packages.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,15 +18,17 @@ public class UnitOfWork : IUnitOfWork
         _repositories = new Dictionary<Type, object>();
     }
 
-    public IGenericRepository<T> Repository<T>() where T : class
+    public IEfCoreRepository<TEntity> Repository<TEntity>() where TEntity : class, IEntity
     {
-        var type = typeof(T);
+        var type = typeof(TEntity);
         if (!_repositories.ContainsKey(type))
         {
-            _repositories[type] = new GenericRepository<T>(_context);
+            var repositoryInstance = Activator.CreateInstance(
+                typeof(EfCoreRepositoryBase<,>).MakeGenericType(type, _context.GetType()), _context);
+            _repositories[type] = repositoryInstance!;
         }
 
-        return (IGenericRepository<T>)_repositories[type];
+        return (IEfCoreRepository<TEntity>)_repositories[type];
     }
 
     public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
@@ -49,7 +53,7 @@ public class UnitOfWork : IUnitOfWork
 
     public async Task AddRangeAsync<T>(IEnumerable<T> entities) where T : class
     {
-        await Repository<T>().AddRangeAsync(entities);
+        await _context.Set<T>().AddRangeAsync(entities);
     }
 
     public void Dispose()

@@ -4,12 +4,14 @@ using Core.Utilities.Results;
 
 namespace Core.Packages.Application.Repositories;
 
-public interface IEntityRepository<T>
-    where T : class, IEntity{
-    T Add(T entity);
+public interface IEfCoreRepository<T>
+    where T : class{
+    Task<T> AddAsync(T entity);
+    Task AddRangeAsync<T>(IEnumerable<T> entities) where T : class;
     T Update(T entity);
-    void Delete(T entity);
+    Task DeleteAsync(T entity);
     IEnumerable<T> GetList(Expression<Func<T, bool>> expression = null);
+    Task<bool> AnyAsync(Expression<Func<T, bool>> predicate);
     Task<IEnumerable<T>> GetListAsync(Expression<Func<T, bool>> expression = null);
     T Get(Expression<Func<T, bool>> expression);
     Task<T> GetAsync(Expression<Func<T, bool>> expression);

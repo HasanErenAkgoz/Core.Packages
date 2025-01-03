@@ -1,6 +1,5 @@
 using Core.Packages.Application.Interfaces;
 using Core.Packages.Domain.Security.Permissions.Entities;
-using Microsoft.EntityFrameworkCore;
 
 namespace Core.Packages.Infrastructure.Services;
 

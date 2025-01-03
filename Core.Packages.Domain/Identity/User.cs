@@ -2,7 +2,7 @@ using Core.Packages.Domain.Common;
 
 namespace Core.Packages.Domain.Identity;
 
-public class User : BaseEntity<int>
+public class User : BaseEntity<int>, IEntity
 {
     public string FirstName { get; set; }
     public string LastName { get; set; }

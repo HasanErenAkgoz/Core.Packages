@@ -2,7 +2,7 @@ using Core.Packages.Domain.Common;
 
 namespace Core.Packages.Domain.Identity;
 
-public class RefreshToken : BaseEntity<int>
+public class RefreshToken : BaseEntity<int>,IEntity
 {
     public int UserId { get; set; }
     public string Token { get; set; }

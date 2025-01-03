@@ -61,6 +61,7 @@ public class RolePermissionManager : IRolePermissionService
 
         if (rolePermission != null)
         {
+            await _unitOfWork.BeginTransactionAsync();
             await _unitOfWork.Repository<RolePermission>().DeleteAsync(rolePermission);
             await _unitOfWork.CommitTransactionAsync();
             _cache.Remove($"{CacheKeyPrefix}{roleName}");

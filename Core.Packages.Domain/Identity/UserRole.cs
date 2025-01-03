@@ -2,7 +2,7 @@ using Core.Packages.Domain.Common;
 
 namespace Core.Packages.Domain.Identity;
 
-public class UserRole : BaseEntity<int>
+public class UserRole : BaseEntity<int>, IEntity
 {
     public int UserId { get; set; }
     public int RoleId { get; set; }

@@ -2,7 +2,7 @@ using Core.Packages.Domain.Common;
 
 namespace Core.Packages.Domain.Identity;
 
-public class BlacklistedToken : BaseEntity<int>
+public class BlacklistedToken : BaseEntity<int>, IEntity
 {
     public string Token { get; set; }
     public DateTime BlacklistedDate { get; set; }

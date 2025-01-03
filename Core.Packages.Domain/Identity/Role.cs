@@ -3,7 +3,7 @@ using Core.Packages.Domain.Security.Permissions.Entities;
 
 namespace Core.Packages.Domain.Identity;
 
-public class Role : BaseEntity<int>
+public class Role : BaseEntity<int>, IEntity
 {
     public string Name { get; set; }
     public string Description { get; set; }
