@@ -2,7 +2,7 @@
 
 namespace Core.Packages.Domain.Entities
 {
-    public class Role :BaseEntity<int>
+    public class Role : BaseEntity<int>
     {
         public string Name { get; set; }
         public ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();

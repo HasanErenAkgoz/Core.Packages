@@ -1,5 +1,3 @@
-using Core.Packages.Domain.Repositories;
-using Core.Packages.Domain.Repositories.EntityFrameworkCore;
 using Core.Packages.Domain.Repositories.NewFolder;
 using Core.Packages.Domain.UnitOfWork;
 using Core.Packages.Persistence.Repositories.EntitiyFrameworkCore;
@@ -23,8 +21,7 @@ namespace Core.Packages.Persistence
             IConfiguration configuration) 
             where TContext : DbContext
         {
-            services.AddScoped(typeof(ICommandAsyncRepository<>), typeof(EfEntityRepository<,>));
-            services.AddScoped(typeof(IQueryAsyncRepository<>), typeof(EfEntityRepository<,>));
+            services.AddScoped(typeof(IEntityRepository<>), typeof(EfEntityRepository<,>));
             services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork<>));
 
             services.AddDbContext<TContext>(options =>

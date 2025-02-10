@@ -18,9 +18,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\Permissions\Queries\" />
-    <Folder Include="Features\Users\Validations\" />
-    <Folder Include="Features\Users\Queries\" />
+    <Folder Include="Features\NewFolder\" />
+    <Folder Include="Features\Users\" />
   </ItemGroup>
 
 </Project>

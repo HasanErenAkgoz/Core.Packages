@@ -1,4 +1,3 @@
-using Core.Packages.Domain.Repositories.EntityFrameworkCore;
 using Core.Packages.Domain.Repositories.NewFolder;
 using EFCore.BulkExtensions;
 using Microsoft.EntityFrameworkCore;
@@ -6,7 +5,7 @@ using System.Linq.Expressions;
 
 namespace Core.Packages.Persistence.Repositories.EntitiyFrameworkCore
 {
-    public class EfEntityRepository<TEntity, TContext> : ICommandAsyncRepository<TEntity>, IQueryAsyncRepository<TEntity> where TEntity : class where TContext : DbContext
+    public class EfEntityRepository<TEntity, TContext> : IEntityRepository<TEntity> where TEntity : class where TContext : DbContext
     {
         protected TContext Context { get; }
         public EfEntityRepository(TContext context)
@@ -63,33 +62,6 @@ namespace Core.Packages.Persistence.Repositories.EntitiyFrameworkCore
         {
             return await Context.Set<TEntity>().FirstOrDefaultAsync(expression, cancellationToken);
         }
-
-        public async Task<int> SaveChangesAsync()
-        {
-            return await Context.SaveChangesAsync();
-        }
-
-        public TResult InTransaction<TResult>(CancellationToken cancellationToken, Func<TResult> action, Action successAction = null, Action<Exception> exceptionAction = null)
-        {
-            using var transaction = Context.Database.BeginTransaction();
-            
-            try
-            {
-                var result = action();
-                 Context.SaveChangesAsync(cancellationToken);
-                transaction.Commit();
-                
-                successAction?.Invoke();
-                return result;
-            }
-            catch (Exception ex)
-            {
-                transaction.Rollback();
-                exceptionAction?.Invoke(ex);
-                throw;
-            }
-        }
-
         public async Task<int> GetCountAsync(CancellationToken cancellationToken = default,Expression < Func<TEntity, bool>> expression = null)
         {
             IQueryable<TEntity> query = Context.Set<TEntity>();
