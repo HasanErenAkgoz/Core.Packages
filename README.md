@@ -19,7 +19,7 @@ CorePackages, modern bir .NET projesinin ihtiyaç duyduğu aşağıdaki bileşen
 - **✅ Exception Handling & Validation**: Merkezi hata yönetimi ve FluentValidation entegrasyonu.
 - **✅ OpenAPI (Swagger)**: API endpointlerinin belgelenmesi için entegre edilmiş OpenAPI desteği.
 - **✅ Genişletilebilir Modüler Yapı**: Proje ihtiyaçlarınıza uygun şekilde genişletilebilir.
-- **✅ Redis İmplementasyonu  **:  Verilerinize daha hızlı erişebilmeniz için Redis İmplementasyonu yapılmıştır.
+- ✅ Redis İmplementasyonu  **:  Verilerinize daha hızlı erişebilmeniz için Redis İmplementasyonu yapılmıştır.
 - 
 ## 🎯 Hedef Kitle
 Bu proje, **.NET geliştiricileri** için hazırlanmıştır. Yeni bir projeye başlarken temel bileşenleri tekrar tekrar yazmak yerine, CorePackages kullanılarak zaman kazandıran bir altyapı sunar.
