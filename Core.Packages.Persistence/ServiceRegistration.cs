@@ -23,20 +23,7 @@ namespace Core.Packages.Persistence
             services.AddScoped<IRolePermissionRepository, RolePermissionRepository>();
             services.AddDbContext<TContext>(options =>
             {
-                options.UseSqlServer(
-                    configuration.GetConnectionString("DefaultConnection"),
-                    sqlOptions =>
-                    {
-                        sqlOptions.EnableRetryOnFailure(
-                            maxRetryCount: 5,
-                            maxRetryDelay: TimeSpan.FromSeconds(30),
-                            errorNumbersToAdd: null);
-
-                        sqlOptions.MigrationsAssembly(typeof(TContext).Assembly.FullName);
-                    }
-                );
-
-
+                options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
                 options.EnableSensitiveDataLogging();
                 options.EnableDetailedErrors();
 
@@ -62,8 +49,8 @@ namespace Core.Packages.Persistence
 
     
             services.AddDataProtection();
-       
-            //services.AddHostedService<PermissionInitializerHostedService>();
+
+            services.AddHostedService<PermissionInitializerHostedService>();
             return services;
         }
     }

@@ -39,8 +39,6 @@ namespace Core.Packages.Infrastructure.Services.JWT
             var jwt = await CreateJwtSecurityToken(_tokenOptions, user, credentials);
             var jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
             var token = jwtSecurityTokenHandler.WriteToken(jwt);
-            Console.WriteLine($"Security Key is Null: {_tokenOptions.SecurityKey == null}");
-            Console.WriteLine($"Security Key: {_tokenOptions.SecurityKey}");
             return new TAccessToken()
             {
                 Token = token,

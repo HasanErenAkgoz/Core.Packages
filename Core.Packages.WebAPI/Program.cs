@@ -1,10 +1,6 @@
 ﻿using Core.Packages.Application;
 using Core.Packages.Persistence;
 using Core.Packages.Persistence.Context;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
-using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,11 +21,10 @@ app.Run();
 void ConfigureServices(WebApplicationBuilder builder)
 {
     builder.Services.AddControllers();
+    builder.Services.AddHttpContextAccessor();
     builder.Services.AddCoreApplicationServices();
     builder.Services.AddCoreInfrastructureServices(builder.Configuration);
     builder.Services.AddCorePersistenceServices<BaseDbContext>(builder.Configuration);
-    builder.Services.AddJWTSettingsService(builder.Configuration);
-    builder.Services.AddSwaggerServices(builder.Configuration);
 
 }
 

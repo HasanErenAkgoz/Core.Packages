@@ -9,16 +9,13 @@ namespace Core.Packages.Application.Features.Roles.Commands.Create
     public class CreateRoleCommandHandler : IRequestHandler<CreateRoleCommand, IDataResult<int>>
     {
         private readonly RoleManager<Role> _roleManager;
-        private readonly IAuthenticationService _authenticationService;
         public CreateRoleCommandHandler(RoleManager<Role> roleManager, IAuthenticationService authenticationService)
         {
             _roleManager = roleManager;
-            _authenticationService = authenticationService;
         }
 
         public async Task<IDataResult<int>> Handle(CreateRoleCommand request, CancellationToken cancellationToken)
         {
-            _authenticationService.EnsurePermissionForHandler<CreateRoleCommand>();
             try
             {
                 var checkRoleExists = await _roleManager.RoleExistsAsync(request.Name);

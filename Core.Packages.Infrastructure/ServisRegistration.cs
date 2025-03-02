@@ -1,11 +1,15 @@
-﻿using Core.Packages.Application.Common.Services.Auth;
+﻿using Core.Packages.Application.Common.Behaviors;
+using Core.Packages.Application.Common.Services.Auth;
+using Core.Packages.Application.Common.Services.Cache;
 using Core.Packages.Application.Common.Services.Email;
 using Core.Packages.Application.Common.Services.JWT;
 using Core.Packages.Infrastructure.Configurations.Email;
 using Core.Packages.Infrastructure.Configurations.Token;
 using Core.Packages.Infrastructure.Services.Auth;
+using Core.Packages.Infrastructure.Services.Cache;
 using Core.Packages.Infrastructure.Services.Email;
 using Core.Packages.Infrastructure.Services.JWT;
+using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,17 +23,9 @@ public static class ServiceRegistration
     public static IServiceCollection AddCoreInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.Configure<EmailSettings>(configuration.GetSection("EmailSettings"));
-        services.AddTransient<IAuthenticationService, AuthenticationService>();
         services.AddScoped<ITokenService, JwtService>();
-        services.AddTransient<IEmailService, EmailService>(); 
-
-        var redisConfiguration = configuration.GetSection("Redis:Configuration").Value;
-        services.AddStackExchangeRedisCache(options =>
-        {
-            options.Configuration = redisConfiguration;
-            options.InstanceName = configuration["Redis:InstanceName"];
-        });
-
+        services.AddTransient<IAuthenticationService, AuthenticationService>();
+        services.AddTransient<IEmailService, EmailService>();
         Log.Logger = new LoggerConfiguration()
             .ReadFrom.Configuration(configuration)
             .Enrich.FromLogContext()
@@ -40,6 +36,9 @@ public static class ServiceRegistration
             loggingBuilder.AddSerilog();
         });
 
+        services.AddJWTSettingsService(configuration);
+        services.AddSwaggerServices(configuration);
+        services.AddRedisSettingsService(configuration);
         return services;
     }
 
@@ -107,4 +106,34 @@ public static class ServiceRegistration
 
         return services;
     }
+
+    public static IServiceCollection AddRedisSettingsService(this IServiceCollection services, IConfiguration configuration)
+    {
+        var redisConfig = configuration.GetSection("Redis");
+
+        var connectionString = Environment.GetEnvironmentVariable("REDIS_CONNECTION_STRING")
+                                ?? redisConfig["ConnectionString"];
+
+        var instanceName = redisConfig["InstanceName"];
+        var useSsl = redisConfig.GetValue<bool>("UseSsl", false);
+        var password = redisConfig["Password"];
+
+        //if (!string.IsNullOrEmpty(password))
+        //{
+        //    connectionString += $",password={password}";
+        //}
+
+        if (useSsl)
+        {
+            connectionString += ",ssl=True,abortConnect=False";
+        }
+
+        services.AddSingleton<IRedisCacheService>(new RedisCacheService(connectionString, instanceName));
+        services.AddSingleton<IRedisLockService>(new RedisLockService(connectionString));
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(CachePipelineBehavior<,>));
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LockPipelineBehavior<,>));
+
+        return services;
+    }
+
 }
