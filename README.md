@@ -1,4 +1,5 @@
 
+
 # CorePackages: .NET Geliştiriciler İçin Temel Altyapı
 
 ## 📌 Proje Hakkında
@@ -20,7 +21,8 @@ CorePackages, modern bir .NET projesinin ihtiyaç duyduğu aşağıdaki bileşen
 - **✅ OpenAPI (Swagger)**: API endpointlerinin belgelenmesi için entegre edilmiş OpenAPI desteği.
 - **✅ Genişletilebilir Modüler Yapı**: Proje ihtiyaçlarınıza uygun şekilde genişletilebilir.
 - ✅ Redis İmplementasyonu  **:  Verilerinize daha hızlı erişebilmeniz için Redis İmplementasyonu yapılmıştır.
-- 
+- ✅ Translate Servis : Translate Servis ile projelerinize çoklu dil desteği ekleyebilirsiniz.
+- File Upload : ✅  File Upload ile hem local de hemde Azure da verilerinizi saklayabilirsiniz
 ## 🎯 Hedef Kitle
 Bu proje, **.NET geliştiricileri** için hazırlanmıştır. Yeni bir projeye başlarken temel bileşenleri tekrar tekrar yazmak yerine, CorePackages kullanılarak zaman kazandıran bir altyapı sunar.
 
@@ -36,6 +38,9 @@ Bu proje, **.NET geliştiricileri** için hazırlanmıştır. Yeni bir projeye b
 - **Swagger / OpenAPI** (API dokümantasyonu için)
 - **AutoMapper** (Veri dönüşümleri için)
 - **Redis** (Cache)
+- **File Upload**
+- **Auto Mapper**
+- **Twilio Servis**
 
 ## 📌 Kurulum ve Kullanım
 Projeyi sisteminize indirmek ve kullanmaya başlamak için aşağıdaki adımları takip edebilirsiniz:
