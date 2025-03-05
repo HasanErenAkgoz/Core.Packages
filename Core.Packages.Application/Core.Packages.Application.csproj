@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Features\Files\Commands\NewFolder1\**" />
+    <EmbeddedResource Remove="Features\Files\Commands\NewFolder1\**" />
+    <None Remove="Features\Files\Commands\NewFolder1\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="14.0.0" />
     <PackageReference Include="FluentValidation" Version="11.11.0" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.11.0" />
@@ -22,6 +28,7 @@
 
   <ItemGroup>
     <Folder Include="Common\Security\" />
+    <Folder Include="Features\Translate\Queries\" />
   </ItemGroup>
 
 </Project>

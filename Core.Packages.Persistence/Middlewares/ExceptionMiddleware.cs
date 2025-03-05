@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Security;
 using System.Text.Json;
@@ -27,13 +27,22 @@ namespace Core.Packages.Persistence.Middlewares
             catch (Exception e)
             {
                 _logger.LogError($"Hata yakalandı: {e.Message}");
-                await HandleExceptionAsync(httpContext, e);
+
+                if (!httpContext.Response.HasStarted) // ✅ Yanıt başladı mı kontrol et
+                {
+                    await HandleExceptionAsync(httpContext, e);
+                }
+                else
+                {
+                    _logger.LogWarning("Yanıt başlatıldığı için hata mesajı yazılamadı.");
+                }
             }
         }
 
         private async Task HandleExceptionAsync(HttpContext httpContext, Exception e)
         {
             httpContext.Response.ContentType = "application/json";
+
             httpContext.Response.StatusCode = e switch
             {
                 ValidationException => (int)HttpStatusCode.BadRequest,
@@ -46,7 +55,7 @@ namespace Core.Packages.Persistence.Middlewares
 
             var response = new
             {
-                StatusCode = httpContext.Response.StatusCode,
+                httpContext.Response.StatusCode,
                 Message = e.Message ?? "Bilinmeyen bir hata oluştu.",
                 Timestamp = DateTime.UtcNow
             };

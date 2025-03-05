@@ -11,6 +11,7 @@ namespace Core.Packages.WebAPI.Controllers
     public class PermissionController : BaseApiController
     {
 
+        [Produces("application/json", "text/plain")]
         [HttpGet("getall")]
         public async Task<IActionResult> GetAll()
         {

@@ -25,7 +25,7 @@ namespace Core.Packages.Application.Features.Roles.Commands.Create
                     await _roleManager.CreateAsync( role);
                     return new SuccessDataResult<int>(role.Id,"Role created successfully");
                 }
-                return new ErrorDataResult<int>("Role already exists");
+                return new ErrorDataResult<int>(1,"Role already exists");
             }
             catch (Exception ex)
             {

@@ -19,7 +19,6 @@ namespace Core.Packages.Application.Common.Behaviors
             var lockAttribute = request.GetType().GetCustomAttribute<LockAttribute>();
             if (lockAttribute == null) return await next();
 
-            // Dinamik Lock Key oluşturma
             string dynamicLockKey = lockAttribute.LockKey;
             foreach (var prop in request.GetType().GetProperties())
             {

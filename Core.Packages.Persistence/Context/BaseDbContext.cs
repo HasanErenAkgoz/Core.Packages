@@ -20,6 +20,8 @@ namespace Core.Packages.Persistence.Context
         }
         DbSet<Permission> Permissions { get; set; }
         DbSet<RolePermission> RolePermissions { get; set; }
+        DbSet<Translation> Translations { get; set; }
+        DbSet<UploadedFile> UploadedFiles { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -32,19 +34,20 @@ namespace Core.Packages.Persistence.Context
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
-            var entries = ChangeTracker.Entries<BaseEntity<int>>(); 
+            var entries = ChangeTracker.Entries<BaseEntity<int>>();
 
             foreach (var entry in entries)
             {
-                if (entry.State == EntityState.Added) 
+                if (entry.State == EntityState.Added)
                 {
                     entry.Entity.CreatedDate = DateTime.UtcNow;
                     entry.Entity.Status = Status.Active;
 
+
                     var userId = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
                     if (userId != null)
                     {
-                        entry.Entity.CreatedBy = 1;
+                        entry.Entity.CreatedBy = int.Parse(userId);
                     }
                 }
                 else if (entry.State == EntityState.Modified)

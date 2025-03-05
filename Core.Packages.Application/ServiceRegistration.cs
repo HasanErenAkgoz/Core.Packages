@@ -17,7 +17,13 @@ namespace Core.Packages.Application
             services.AddTransient<IMediator, Mediator>();
 
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
-            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(CachePipelineBehavior<,>)); // 👈 Cache Pipeline'ı ekledik!
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(CachePipelineBehavior<,>));
+
+            services.AddAutoMapper(cfg =>
+            {
+                cfg.DisableConstructorMapping();
+            });
+
             return services;
         }
 

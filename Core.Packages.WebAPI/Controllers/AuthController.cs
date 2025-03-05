@@ -1,5 +1,7 @@
-﻿using Core.Packages.Application.Features.Auth.Login.Commands;
+﻿using Core.Packages.Application.Features.Auth.ForgotPassword.Commands;
+using Core.Packages.Application.Features.Auth.Login.Commands;
 using Core.Packages.Application.Features.Auth.Register.Commands;
+using Core.Packages.Application.Features.Auth.ResetPassword;
 using Core.Packages.Application.Features.Email.SendEmail;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -36,6 +38,23 @@ namespace Core.Packages.WebAPI.Controllers
         {
             var result = await Mediator.Send(sendEmailCommand);
             return result.Success ? Ok(result) : BadRequest(result);
+
+        }
+
+        [HttpPost("forgot-password")]
+        [AllowAnonymous]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordCommand command)
+        {
+            var result = await Mediator.Send(command);
+            return result.Success ? Ok(result.Message) : BadRequest(result.Message);
+        }
+
+        [HttpPost("reset-password")]
+        [AllowAnonymous]
+        public async Task<IActionResult> ResetPassword(ResetPasswordCommand command)
+        {
+            var result = await Mediator.Send(command);
+            return result.Success ? Ok(result.Message) : BadRequest(result.Message);
 
         }
     }

@@ -16,7 +16,7 @@ namespace Core.Packages.Infrastructure.Services.Email
             _emailSettings = emailSettings.Value;
         }
 
-        public async Task SendEmailAsync(string to, string subject, string body)
+        public async Task<bool> SendEmailAsync(string to, string subject, string body)
         {
             using (var client = new SmtpClient(_emailSettings.SmtpServer, _emailSettings.SmtpPort))
             {
@@ -32,8 +32,8 @@ namespace Core.Packages.Infrastructure.Services.Email
                 };
 
                 mailMessage.To.Add(to);
-
                 await client.SendMailAsync(mailMessage);
+                return true;
             }
         }
     }

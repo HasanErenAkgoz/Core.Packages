@@ -1,13 +1,17 @@
-﻿using Core.Packages.Application.Common.Behaviors;
+﻿using Azure.Storage.Blobs;
+using Core.Packages.Application.Common.Behaviors;
 using Core.Packages.Application.Common.Services.Auth;
 using Core.Packages.Application.Common.Services.Cache;
 using Core.Packages.Application.Common.Services.Email;
+using Core.Packages.Application.Common.Services.FileUpload;
 using Core.Packages.Application.Common.Services.JWT;
+using Core.Packages.Domain.Repositories.EntityFrameworkCore;
 using Core.Packages.Infrastructure.Configurations.Email;
 using Core.Packages.Infrastructure.Configurations.Token;
 using Core.Packages.Infrastructure.Services.Auth;
 using Core.Packages.Infrastructure.Services.Cache;
 using Core.Packages.Infrastructure.Services.Email;
+using Core.Packages.Infrastructure.Services.FileUpload;
 using Core.Packages.Infrastructure.Services.JWT;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -23,9 +27,11 @@ public static class ServiceRegistration
     public static IServiceCollection AddCoreInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.Configure<EmailSettings>(configuration.GetSection("EmailSettings"));
+    
         services.AddScoped<ITokenService, JwtService>();
-        services.AddTransient<IAuthenticationService, AuthenticationService>();
-        services.AddTransient<IEmailService, EmailService>();
+        services.AddScoped<IAuthenticationService, AuthenticationService>();
+        services.AddScoped<IEmailService, EmailService>();
+
         Log.Logger = new LoggerConfiguration()
             .ReadFrom.Configuration(configuration)
             .Enrich.FromLogContext()
@@ -37,41 +43,13 @@ public static class ServiceRegistration
         });
 
         services.AddJWTSettingsService(configuration);
-        services.AddSwaggerServices(configuration);
         services.AddRedisSettingsService(configuration);
+        services.AddFileStorage(configuration);
         return services;
     }
 
-    public static IServiceCollection AddSwaggerServices(this IServiceCollection services, IConfiguration configuration)
-    {
-        services.AddSwaggerGen(c =>
-        {
-            c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-            {
-                In = ParameterLocation.Header,
-                Description = "JWT Authorization header using the Bearer scheme. Example: \"Bearer {token}\"",
-                Name = "Authorization",
-                Type = SecuritySchemeType.ApiKey
-            });
-            c.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                }
-            },
-            Array.Empty<string>()
-                }
-            });
-        });
-        return services;
-    }
 
-    public static IServiceCollection AddJWTSettingsService(this IServiceCollection services,IConfiguration configuration)
+    public static IServiceCollection AddJWTSettingsService(this IServiceCollection services, IConfiguration configuration)
     {
         var tokenOptions = configuration.GetSection("TokenOptions").Get<TokenOptions>();
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -132,6 +110,24 @@ public static class ServiceRegistration
         services.AddSingleton<IRedisLockService>(new RedisLockService(connectionString));
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(CachePipelineBehavior<,>));
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LockPipelineBehavior<,>));
+
+        return services;
+    }
+
+    public static IServiceCollection AddFileStorage(this IServiceCollection services, IConfiguration configuration)
+    {
+        string provider = configuration["Storage:Provider"];
+
+        if (provider == "Azure")
+        {
+            string connectionString = configuration["Storage:AzureBlobConnectionString"];
+            services.AddScoped<IFileStorageService>(sp =>
+                new AzureBlobStorageService(connectionString, sp.GetRequiredService<IUploadedFileRepository>()));
+        }
+        else
+        {
+            services.AddScoped<IFileStorageService, LocalFileStorageService>();
+        }
 
         return services;
     }

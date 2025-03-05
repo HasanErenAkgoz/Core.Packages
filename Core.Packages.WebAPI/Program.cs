@@ -1,6 +1,7 @@
 ﻿using Core.Packages.Application;
 using Core.Packages.Persistence;
 using Core.Packages.Persistence.Context;
+using Core.Packages.Persistence.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,13 +36,24 @@ void ConfigureMiddleware(WebApplication app)
         app.UseSwagger();
         app.UseSwaggerUI();
     }
+
+    app.UseStaticFiles();
     app.UseCors("AllowAllOrigins");
+
     app.UseHttpsRedirection();
-    app.UseRouting();
+    app.UseRouting(); 
+
+    app.UseCustomMiddlewares();
+
     app.UseAuthentication();
     app.UseAuthorization();
-    app.UseEndpoints(endpoints => endpoints.MapControllers());
+
+    app.UseEndpoints(endpoints =>
+    {
+        endpoints.MapControllers();
+    });
 }
+
 
 
 
