@@ -1,3 +1,4 @@
+
 # CorePackages: .NET Geliştiriciler İçin Temel Altyapı
 
 ## 📌 Proje Hakkında
@@ -18,7 +19,8 @@ CorePackages, modern bir .NET projesinin ihtiyaç duyduğu aşağıdaki bileşen
 - **✅ Exception Handling & Validation**: Merkezi hata yönetimi ve FluentValidation entegrasyonu.
 - **✅ OpenAPI (Swagger)**: API endpointlerinin belgelenmesi için entegre edilmiş OpenAPI desteği.
 - **✅ Genişletilebilir Modüler Yapı**: Proje ihtiyaçlarınıza uygun şekilde genişletilebilir.
-
+- ✅ Redis İmplementasyonu  **:  Verilerinize daha hızlı erişebilmeniz için Redis İmplementasyonu yapılmıştır.
+- 
 ## 🎯 Hedef Kitle
 Bu proje, **.NET geliştiricileri** için hazırlanmıştır. Yeni bir projeye başlarken temel bileşenleri tekrar tekrar yazmak yerine, CorePackages kullanılarak zaman kazandıran bir altyapı sunar.
 
@@ -33,6 +35,7 @@ Bu proje, **.NET geliştiricileri** için hazırlanmıştır. Yeni bir projeye b
 - **Hangfire** (Arka plan işlemleri için)
 - **Swagger / OpenAPI** (API dokümantasyonu için)
 - **AutoMapper** (Veri dönüşümleri için)
+- **Redis** (Cache)
 
 ## 📌 Kurulum ve Kullanım
 Projeyi sisteminize indirmek ve kullanmaya başlamak için aşağıdaki adımları takip edebilirsiniz:
@@ -87,9 +90,72 @@ http://localhost:5000/swagger/index.html
     "AccountSid": "YourTwilioAccountSid",
     "AuthToken": "YourTwilioAuthToken",
     "FromPhoneNumber": "+1234567890"
-  }
+  },
+  "Redis": {
+  "ConnectionString": "localhost:Adresss",
+  "InstanceName": "SpecialInstanceName",
+  "UseSsl": false,
+  "Password": "your-secure-password"
+},
 }
 ```
+
+
+**Kullanım Senaryoları**
+
+ - **Email Service Kullanımı**; Proje içerisinde bulunan IEmailService interface'ini çağırıp içerisinde bulunan SendEmailAsync fonksiyonunu kullanmanız gerekmektedir.
+Örnek Kullanım; 
+````
+    public class SendEmailCommandHandler : IRequestHandler<SendEmailCommand, IResult>
+    {
+        private readonly IEmailService _emailService;
+        private readonly IAuthenticationService _authenticationService;
+        public SendEmailCommandHandler(IEmailService emailService, IAuthenticationService authenticationService)
+        {
+            _emailService = emailService;
+            _authenticationService = authenticationService;
+        }
+
+        public async Task<IResult> Handle(SendEmailCommand request, CancellationToken cancellationToken)
+        {
+            _authenticationService.EnsurePermissionForHandler<SendEmailCommandHandler>();
+            try
+            {
+                await _emailService.SendEmailAsync(request.To, request.Subject, request.Body);
+                return new SuccessResult(Messages.SendEmail);
+            }
+            catch (Exception ex)
+            {
+                return new ErrorResult(ex.Message);
+            }
+        }
+    }
+````
+
+**Redis Kullanımı**
+UserId kısmı sisteme Authentice olan User dan otomatik olarak gelecektir.
+````
+   [Cache("permissions_{UserId}", 30)]
+   public class GetAllPermissionQuery : IRequest<IDataResult<IEnumerable<GetPermissionResponse>>>
+   {
+
+   }
+````
+
+**AuthoMapper Kullanımı;**
+````
+   public sealed class GetPermissionResponse : IMapFrom<Core.Packages.Domain.Entities.Permission>
+   {
+       public string Name { get; set; }
+       public string Description { get; set; }
+
+       public void Mapping(Profile profile)
+       {
+           profile.CreateMap<Core.Packages.Domain.Entities.Permission, GetPermissionResponse>();
+       }
+   }
+````
+
 
 ## 📖 Katkıda Bulunma
 Projeye katkıda bulunmak isterseniz **Pull Request** gönderebilir veya **Issue** oluşturarak geri bildirimde bulunabilirsiniz.
